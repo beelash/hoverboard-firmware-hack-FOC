@@ -174,7 +174,12 @@ format:
 #######################################
 clean:
 	-rm -fR .dep $(BUILD_DIR)
+	gdb -ex "target extended-remote /dev/ttyACM0" -ex "monitor swdp_scan" -ex "att 1" -ex "stop" -ex "mon erase_mass" -ex "detach" -ex "quit"
 
+ADC:
+	make -e VARIANT=VARIANT_ADC
+	gdb -ex "target extended-remote /dev/ttyACM0" -ex "monitor swdp_scan" -ex "att 1" -ex "mon erase_mass" $(BUILD_DIR)/$(TARGET).hex -ex "load" -ex "compare-sections" -ex "detach" –ex "quit"
+	
 flash:
 	st-flash --reset write $(BUILD_DIR)/$(TARGET).bin 0x8000000
 
